@@ -11,7 +11,8 @@ export CFLAGS='-O3 -DNDEBUG -march=native -gmlt -fno-omit-frame-pointer'
 export CXXFLAGS=$CFLAGS
 export LDFLAGS="-Wl,-rpath=$HOME/lib64 -Wl,-rpath=$HOME/lib"
 
-cmake ../.. -G Ninja \
+cmake ../../project/llvm -G Ninja \
+  -DLLVM_ENABLE_PROJECTS="clang;lld;lldb;polly;libcxx;libcxxabi;compiler-rt;openmp;libunwind;parallel-libs" \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_FLAGS_RELEASE= \
   -DCMAKE_CXX_FLAGS_RELEASE= \

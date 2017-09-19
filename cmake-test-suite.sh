@@ -31,7 +31,7 @@ export CXXFLAGS=$CFLAGS
 LDFLAGS=${5:-"-fuse-ld=lld -Wl,-rpath=$PREFIX/lib64 -Wl,-rpath=$PREFIX/lib"}
 export LDFLAGS
 
-cmake ../../projects/test-suite -G Ninja \
+cmake ../../test-suite -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_FLAGS_RELEASE= \
   -DCMAKE_CXX_FLAGS_RELEASE= \
