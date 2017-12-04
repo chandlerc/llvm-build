@@ -16,7 +16,7 @@ cmake ../../project/llvm -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_FLAGS_RELEASE= \
   -DCMAKE_CXX_FLAGS_RELEASE= \
-  -DCMAKE_INSTALL_PREFIX=/home/chandlerc/installs/llvm-$(date +'%Y-%m-%d') \
+  -DCMAKE_INSTALL_PREFIX=$HOME/installs/llvm-$(date +'%Y-%m-%d') \
   -DLIBCXX_ABI_UNSTABLE=ON \
   -DLLVM_CCACHE_BUILD=ON \
   -DLLVM_ENABLE_ASSERTIONS=OFF \
