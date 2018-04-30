@@ -1,35 +1,66 @@
 #!/bin/bash -eux
 
-DIR=${1:-test-suite}
+ARGS=$(getopt --longoptions="prefix:,cflags:,ldflags:,test,benchmark" -- "" "$@")
+eval set -- "$ARGS"
+
+PREFIX=opt
+CFLAGS="-O3 -gmlt -fno-omit-frame-pointer"
+LDFLAGS="-fuse-ld=lld"
+BENCHMARK=false
+while [[ $# -ge 1 ]]; do
+  case "$1" in
+    --)
+      shift
+      break
+      ;;
+
+    --prefix)
+      PREFIX="$2"
+      shift
+      ;;
+
+    --cflags)
+      CFLAGS="$CFLAGS $2"
+      shift
+      ;;
+
+    --ldflags)
+      LDFLAGS="$LDFLAGS $2"
+      shift
+      ;;
+
+    --test)
+      BENCHMARK=false
+      ;;
+
+    --benchmark)
+      BENCHMARK=true
+      ;;
+  esac
+  shift
+done
+
+DIR=${1:-test-suite-$(basename "$PREFIX")}
 mkdir $DIR
 cd $DIR
 
-PREFIX=${2:-opt}
 if [[ $PREFIX != */* ]]; then
   PREFIX=../$PREFIX
 fi
 export CC=$PREFIX/bin/clang
 export CXX=$PREFIX/bin/clang++
 
-case ${3:-'test'} in
-  'benchmark')
-    SET_SUITE='-DTEST_SUITE_BENCHMARKING_ONLY=ON'
-    SET_RUN_TYPE='-DTEST_SUITE_RUN_TYPE=ref'
-    ;;
-  'test')
-    SET_SUITE='-DTEST_SUITE_BENCHMARKING_ONLY=OFF'
-    SET_RUN_TYPE='-DTEST_SUITE_RUN_TYPE=test'
-    ;;
-  *)
-    exit 1
-    ;;
-esac
+if $BENCHMARK; then
+  SET_SUITE='-DTEST_SUITE_BENCHMARKING_ONLY=ON'
+  SET_RUN_TYPE='-DTEST_SUITE_RUN_TYPE=ref'
+else
+  SET_SUITE='-DTEST_SUITE_BENCHMARKING_ONLY=OFF'
+  SET_RUN_TYPE='-DTEST_SUITE_RUN_TYPE=test'
+fi
 
-CFLAGS=${4:-'-O3 -gmlt -fno-omit-frame-pointer'}
 export CFLAGS
 export CXXFLAGS=$CFLAGS
-LDFLAGS=${5:-"-fuse-ld=lld -Wl,-rpath=$PREFIX/lib64 -Wl,-rpath=$PREFIX/lib"}
-export LDFLAGS
+export LDFLAGS="-Wl,-rpath=$PREFIX/lib64 -Wl,-rpath=$PREFIX/lib $LDFLAGS"
 
 cmake ../../test-suite -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
