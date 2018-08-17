@@ -7,7 +7,7 @@ cd $DIR
 export CC=~/bin/clang
 export CXX=~/bin/clang++
 
-export CFLAGS='-O2 -g -fno-omit-frame-pointer'
+export CFLAGS='-O2 -gmlt -fno-omit-frame-pointer -fno-optimize-sibling-calls -Xclang -mdisable-tail-calls'
 export CXXFLAGS=$CFLAGS
 export LDFLAGS="-Wl,-rpath=$HOME/lib64 -Wl,-rpath=$HOME/lib"
 
