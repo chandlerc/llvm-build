@@ -7,7 +7,7 @@ cd $DIR
 export CC=~/bin/clang
 export CXX=~/bin/clang++
 
-export CFLAGS='-O3 -DNDEBUG -march=native -gmlt -fno-omit-frame-pointer'
+export CFLAGS='-O3 -DNDEBUG -march=native -fexperimental-new-pass-manager -fno-omit-frame-pointer'
 export CXXFLAGS=$CFLAGS
 export LDFLAGS="-Wl,-rpath=$HOME/lib64 -Wl,-rpath=$HOME/lib"
 
