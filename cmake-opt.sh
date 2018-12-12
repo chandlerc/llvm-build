@@ -9,7 +9,7 @@ export CXX=~/bin/clang++
 
 export CFLAGS='-O3 -DNDEBUG -march=native -fexperimental-new-pass-manager -fno-omit-frame-pointer'
 export CXXFLAGS=$CFLAGS
-export LDFLAGS="-Wl,-rpath=$HOME/lib64 -Wl,-rpath=$HOME/lib"
+export LDFLAGS="-Wl,-rpath=\$ORIGIN/../lib64 -Wl,-rpath=\$ORIGIN/../lib"
 
 cmake ../../project/llvm -G Ninja \
   -DLLVM_ENABLE_PROJECTS="clang;lld;lldb;polly;libcxx;libcxxabi;compiler-rt;openmp;libunwind;parallel-libs" \
