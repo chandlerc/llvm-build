@@ -7,7 +7,7 @@ cd $DIR
 export CC=~/bin/clang
 export CXX=~/bin/clang++
 
-DEBUG_CFLAGS='-O0 -g -fno-omit-frame-pointer'
+DEBUG_CFLAGS='-O0 -g -fno-omit-frame-pointer -fexperimental-new-pass-manager'
 DEBUG_CXXFLAGS=$DEBUG_CFLAGS
 export LDFLAGS="-Wl,-rpath=$HOME/lib64 -Wl,-rpath=$HOME/lib"
 
