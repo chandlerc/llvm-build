@@ -68,6 +68,5 @@ cmake ../../test-suite -G Ninja \
   -DCMAKE_CXX_FLAGS_RELEASE= \
   -DTEST_SUITE_LIT=$PREFIX/bin/llvm-lit \
   -DTEST_SUITE_USE_PERF=ON \
-  -DTEST_SUITE_SPEC2006_ROOT=$HOME/src/cpu2006 \
   $SET_SUITE \
   $SET_RUN_TYPE
