@@ -7,7 +7,7 @@ cd $DIR
 export CC=clang
 export CXX=clang++
 
-export CFLAGS='-no-canonical-prefixes -Os -gmlt -fno-omit-frame-pointer -fno-optimize-sibling-calls -Xclang -mdisable-tail-calls -fcolor-diagnostics'
+export CFLAGS='-no-canonical-prefixes -Os -gmlt -fno-omit-frame-pointer -fno-optimize-sibling-calls -fcolor-diagnostics'
 export CXXFLAGS=$CFLAGS
 #export LDFLAGS="-Wl,-rpath=$HOME/lib64 -Wl,-rpath=$HOME/lib"
 
@@ -20,5 +20,4 @@ cmake ../../llvm-project/llvm -G Ninja \
   -DLLVM_ENABLE_ASSERTIONS=ON \
   -DLLVM_ENABLE_LIBCXX=ON \
   -DLLVM_ENABLE_LLD=ON \
-  -DLLVM_INCLUDE_GO_TESTS=OFF \
   -DLLVM_LIBDIR_SUFFIX=64
