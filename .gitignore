@@ -1,0 +1,4 @@
+# The build trees themselves live in this directory (opt/, dbg/, gcc-opt/, ...),
+# and a name is whatever got passed to the script that created it. Ignore every
+# subdirectory and track just the scripts at the top level.
+/*/

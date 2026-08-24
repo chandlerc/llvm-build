@@ -1,5 +1,7 @@
 #!/bin/bash -eux
 
+source "$(dirname "$0")/common.sh"
+
 ARGS=$(getopt --longoptions="prefix:,cflags:,ldflags:,test,benchmark" -- "" "$@")
 eval set -- "$ARGS"
 
@@ -40,13 +42,16 @@ while [[ $# -ge 1 ]]; do
   shift
 done
 
-DIR=${1:-test-suite-$(basename "$PREFIX")}
-mkdir $DIR
-cd $DIR
-
+# A prefix without a slash names one of the build directories next to this
+# script. Resolve it now, while the working directory is still predictable: it
+# ends up in rpaths, where a relative path would be useless.
 if [[ $PREFIX != */* ]]; then
-  PREFIX=../$PREFIX
+  PREFIX="$(dirname "$0")/$PREFIX"
 fi
+PREFIX="$(cd "$PREFIX" && pwd)"
+
+setup_build_dir "${1:-test-suite-$(basename "$PREFIX")}"
+
 export CC=$PREFIX/bin/clang
 export CXX=$PREFIX/bin/clang++
 
@@ -62,7 +67,7 @@ export CFLAGS
 export CXXFLAGS=$CFLAGS
 export LDFLAGS="-Wl,-rpath=$PREFIX/lib64 -Wl,-rpath=$PREFIX/lib $LDFLAGS"
 
-cmake ../../test-suite -G Ninja \
+cmake "$TEST_SUITE_SRC" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_FLAGS_RELEASE= \
   -DCMAKE_CXX_FLAGS_RELEASE= \

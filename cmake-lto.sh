@@ -1,29 +1,33 @@
 #!/bin/bash -eux
 
-DIR=${1:-lto}
-mkdir $DIR
-cd $DIR
+source "$(dirname "$0")/common.sh"
+setup_build_dir "${1:-lto}"
 
-export CC=~/bin/clang
-export CXX=~/bin/clang++
+export CC=clang
+export CXX=clang++
 
-export CFLAGS='-O3 -DNDBEUG -march=native -fno-omit-frame-pointer -fexperimental-new-pass-manager'
+export CFLAGS='-no-canonical-prefixes -O3 -DNDEBUG -march=native -gmlt -fno-omit-frame-pointer'
 export CXXFLAGS=$CFLAGS
-export LDFLAGS="-O3 -march=native -Wl,-rpath=$HOME/lib64 -Wl,-rpath=$HOME/lib"
+# LTO moves code generation into the link, so the optimization flags have to be
+# repeated there to have any effect.
+export LDFLAGS="-O3 -march=native -Wl,-rpath=\$ORIGIN/../lib -Wl,-rpath=$HOME/installs/llvm/lib"
 
-cmake ../../project/llvm -G Ninja \
-  -DLLVM_ENABLE_PROJECTS="clang;lld;lldb;polly;libcxx;libcxxabi;compiler-rt;openmp;libunwind;parallel-libs" \
+cmake "$LLVM_SRC/llvm" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
+  -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;cross-project-tests;lld" \
+  -DLLVM_ENABLE_RUNTIMES="compiler-rt;libcxx;libcxxabi;libunwind" \
   -DCMAKE_C_FLAGS_RELEASE= \
   -DCMAKE_CXX_FLAGS_RELEASE= \
-  -DCMAKE_INSTALL_PREFIX=/home/chandlerc/installs/llvm-$(date +'%Y-%m-%d') \
-  -DLIBCXX_ABI_UNSTABLE=ON \
+  -DCMAKE_INSTALL_PREFIX=$HOME/installs/llvm-lto-$(date +'%Y-%m-%d') \
+  -DCLANG_DEFAULT_CXX_STDLIB="libc++" \
+  -DCLANG_DEFAULT_LINKER="lld" \
+  -DCLANG_DEFAULT_OBJCOPY="llvm-objcopy" \
+  -DCLANG_DEFAULT_RTLIB="compiler-rt" \
+  -DCLANG_DEFAULT_UNWINDLIB="libunwind" \
+  -DRUNTIMES_CMAKE_ARGS="$RUNTIMES_ARGS_RELEASE" \
+  -DBUILTINS_CMAKE_ARGS="$BUILTINS_ARGS" \
   -DLLVM_CCACHE_BUILD=ON \
   -DLLVM_ENABLE_ASSERTIONS=OFF \
-  -DLIBCXX_ENABLE_ASSERTIONS=OFF \
-  -DLIBCXXABI_ENABLE_ASSERTIONS=OFF \
   -DLLVM_ENABLE_LIBCXX=ON \
   -DLLVM_ENABLE_LLD=ON \
-  -DLLVM_ENABLE_LTO=ON \
-  -DLLVM_INCLUDE_GO_TESTS=OFF \
-  -DLLVM_LIBDIR_SUFFIX=64
+  -DLLVM_ENABLE_LTO=ON
